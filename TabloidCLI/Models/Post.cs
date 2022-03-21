@@ -12,5 +12,18 @@ namespace TabloidCLI.Models
         public DateTime PublishDateTime { get; set; }
         public Author Author { get; set; }
         public Blog Blog { get; set; }
+    public string PostWithLink
+    {
+        get
+        {
+            return $"{Title}, {Url}";
+        }
     }
+
+    public override string ToString()
+    {
+        return PostWithLink;
+    }
+   }
+
 }
