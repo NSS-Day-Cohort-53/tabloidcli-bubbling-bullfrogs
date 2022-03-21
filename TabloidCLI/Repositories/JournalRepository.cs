@@ -15,27 +15,27 @@ namespace TabloidCLI
         {
             using (SqlConnection conn = Connection)
             {
-            conn.Open();
-            using (SqlCommand cmd = conn.CreateCommand())
-            {
-                cmd.CommandText = @"SELECT Id, Title, Content, CreateDateTime FROM Journal";
-
-                List<Journal> list = new List<Journal>();
-                SqlDataReader reader = cmd.ExecuteReader();
-                while (reader.Read())
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    Journal journal = new Journal()
-                    {
-                        Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                        Title = reader.GetString(reader.GetOrdinal("Title")),
-                        Content = reader.GetString(reader.GetOrdinal("Content")),
-                        CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                    cmd.CommandText = @"SELECT Id, Title, Content, CreateDateTime FROM Journal";
 
-                    };
-                    list.Add(journal);
-                }
-                reader.Close();
-                return list;
+                    List<Journal> list = new List<Journal>();
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Journal journal = new Journal()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Title = reader.GetString(reader.GetOrdinal("Title")),
+                            Content = reader.GetString(reader.GetOrdinal("Content")),
+                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+
+                        };
+                        list.Add(journal);
+                    }
+                    reader.Close();
+                    return list;
                 }
 
             }
@@ -61,9 +61,21 @@ namespace TabloidCLI
                 }
             }
         }
-        public void Update(Journal entry)
+        public void Update(Journal journal)
         {
-            throw new NotImplementedException();
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Journal SET Title = @title, Content = @content WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@title", journal.Title);
+                    cmd.Parameters.AddWithValue("@content", journal.Content);
+                    cmd.Parameters.AddWithValue("@id", journal.Id);
+                    cmd.ExecuteNonQuery();
+                }
+
+            }
         }
         public void Delete(int id)
         {

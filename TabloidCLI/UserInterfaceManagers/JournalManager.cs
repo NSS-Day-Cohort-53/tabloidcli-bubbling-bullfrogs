@@ -22,6 +22,7 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine("Journal Menu");
             Console.WriteLine(" 1) List Journals");
             Console.WriteLine(" 2) Add Journal Entry");
+            Console.WriteLine(" 3) Edit Journal");
             Console.WriteLine(" 0) Go Back");
 
             Console.Write("> ");
@@ -33,6 +34,9 @@ namespace TabloidCLI.UserInterfaceManagers
                     return this;
                 case "2":
                     Add();
+                    return this;
+                case "3":
+                    Edit();
                     return this;
                 case "0":
                     return _parentUI;
@@ -65,5 +69,57 @@ namespace TabloidCLI.UserInterfaceManagers
 
             _journalRepository.Insert(journal);
         }
+        private void Edit()
+        {
+            Journal journalToEdit = Choose("Which journal do you want to edit?");
+            if (journalToEdit == null)
+            {
+                return;
+            }
+            Console.WriteLine();
+            Console.Write("New title (blank to leave unchanged): ");
+            string title = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                journalToEdit.Title = title;
+            }
+            Console.Write("New journal content (blank to leave unchanged): ");
+            string content = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(content))
+            {
+                journalToEdit.Content = content;
+            }
+            _journalRepository.Update(journalToEdit);
+        }
+
+        private Journal Choose(string prompt = null)
+        {
+            if (prompt == null)
+            {
+                prompt = "Please choose a journal entry:";
+            }
+            Console.WriteLine(prompt);
+
+            List<Journal> journals = _journalRepository.GetAll();
+            for (int i = 0; i < journals.Count; i++)
+            {
+                Journal journal = journals[i];
+                Console.WriteLine($" {i + 1}) {journal.Title}");
+            }
+            Console.Write("> ");
+
+            string input = Console.ReadLine();
+            try
+            {
+                int choice = int.Parse(input);
+                return journals[choice - 1];
+            } 
+            catch (Exception )
+            {
+                Console.WriteLine("Invalid Selection");
+                return null;
+            }
+        }
+
     }
 }

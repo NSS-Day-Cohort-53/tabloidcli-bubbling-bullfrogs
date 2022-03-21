@@ -126,8 +126,8 @@ namespace TabloidCLI
                     cmd.CommandText = @"UPDATE Author 
                                            SET FirstName = @firstName,
                                                LastName = @lastName,
-                                               bio = @bio
-                                         WHERE id = @id";
+                                               Bio = @bio
+                                         WHERE Id = @id";
 
                     cmd.Parameters.AddWithValue("@firstName", author.FirstName);
                     cmd.Parameters.AddWithValue("@lastName", author.LastName);
