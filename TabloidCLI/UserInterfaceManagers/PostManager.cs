@@ -14,9 +14,10 @@ namespace TabloidCLI.UserInterfaceManagers
         private PostRepository _postRepository;
         private string _connectionString;
 
-
+      
         private AuthorRepository _authorRepository;
         private BlogRepository _blogRepository;
+        private NoteRepository _noteRepository;
 
 
         public PostManager(IUserInterfaceManager parentUI, string connectionString)
@@ -25,6 +26,7 @@ namespace TabloidCLI.UserInterfaceManagers
             _postRepository = new PostRepository(connectionString);
             _authorRepository = new AuthorRepository(connectionString);
             _blogRepository = new BlogRepository(connectionString);
+            _noteRepository = new NoteRepository(connectionString);
             _connectionString = connectionString;
         }
 
@@ -50,12 +52,18 @@ namespace TabloidCLI.UserInterfaceManagers
                     Add();
                     return this;
                 case "3":
-                    Edit();
                     return this;
                 case "4":
-                    Remove();
                     return this;
                 case "5":
+                    Console.WriteLine("Here is a list of your Notes");
+                    List<Note> notes = _noteRepository.GetAll();
+                    foreach (Note n in notes)
+                    {
+                        Console.WriteLine($"{n.Id} - Note: {n.Content}");
+                    }
+                    Console.Write("Press any key to continue");
+                    Console.ReadKey();
                     return this;
                 case "0":
                     return _parentUI;
@@ -129,32 +137,6 @@ namespace TabloidCLI.UserInterfaceManagers
                 return null;
             }
         }
-
-        private Author ChooseToEdit(string prompt = null)
-        {
-            Console.WriteLine(prompt);
-
-            List<Author> authors = _authorRepository.GetAll();
-
-            for (int i = 0; i < authors.Count; i++)
-            {
-                Author author = authors[i];
-                Console.WriteLine($" {i + 1}) {author.FullName}");
-            }
-            Console.Write("> ");
-
-            string input = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(input))
-            {
-                int choice = int.Parse(input);
-                return authors[choice - 1];
-            }
-            else
-            {
-                return null;
-            }
-
-        }
         private Blog ChooseBlog(string prompt = null)
         {
             if (prompt == null)
@@ -183,119 +165,6 @@ namespace TabloidCLI.UserInterfaceManagers
             {
                 Console.WriteLine("Invalid Selection");
                 return null;
-            }
-        }
-        private Blog ChooseBlogToEdit(string prompt = null)
-        {
-            Console.WriteLine(prompt);
-
-            List<Blog> blogs = _blogRepository.GetAll();
-
-            for (int i = 0; i < blogs.Count; i++)
-            {
-                Blog blog = blogs[i];
-                Console.WriteLine($" {i + 1}) {blog.Title}");
-            }
-            Console.Write("> ");
-
-            string input = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(input))
-            {
-                int choice = int.Parse(input);
-                return blogs[choice - 1];
-            }
-            else
-            {
-                return null;
-            }
-
-        }
-
-        private Post ChoosePost(string prompt = null)
-        {
-            if (prompt == null)
-            {
-                prompt = "Please choose a Post:";
-            }
-
-            Console.WriteLine(prompt);
-
-            List<Post> posts = _postRepository.GetAll();
-
-            for (int i = 0; i < posts.Count; i++)
-            {
-                Post post = posts[i];
-                Console.WriteLine($" {i + 1}) {post.Title}");
-            }
-            Console.Write("> ");
-
-            string input = Console.ReadLine();
-            try
-            {
-                int choice = int.Parse(input);
-                return posts[choice - 1];
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Invalid Selection");
-                return null;
-            }
-        }
-
-        private void Edit()
-        {
-            Post postToEdit = ChoosePost("Which post would you like to edit?");
-            if (postToEdit == null)
-            {
-                return;
-            }
-
-            Console.WriteLine();
-            Console.Write("New Post Title (blank to leave unchanged): ");
-            string title = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(title))
-            {
-                postToEdit.Title = title;
-            }
-            Console.Write("New url (blank to leave unchanged):  ");
-            string url = Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(url))
-            {
-                postToEdit.Url = url;
-            }
-            Console.Write("New publication date (blank to leave unchanged:) ");
-            string publicationDate = (Console.ReadLine());
-            if (!string.IsNullOrWhiteSpace(publicationDate))
-            {
-                postToEdit.PublishDateTime = DateTime.Parse(publicationDate);
-            }
-
-
-
-            Author authorToEdit = ChooseToEdit("Please select the author of this post? (blank to leave unchanged):");
-            if (authorToEdit != null)
-            {
-                postToEdit.Author = authorToEdit;
-            }
-
-
-            Blog blogToEdit = ChooseBlogToEdit("Please Select the blog for this post? (blank to leave unchanged): ");
-            if (blogToEdit != null)
-            {
-                postToEdit.Blog = blogToEdit;
-            }
-
-
-
-            _postRepository.Update(postToEdit);
-        }
-
-        private void Remove()
-        {
-            Post postToDelete = ChoosePost("Which post would you like to remove?");
-            if (postToDelete != null)
-            {
-                _postRepository.Delete(postToDelete.Id);
             }
         }
 
