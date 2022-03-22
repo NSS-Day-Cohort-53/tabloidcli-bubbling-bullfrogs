@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TabloidCLI;
 
 namespace TabloidCLI.UserInterfaceManagers
 {
@@ -65,6 +60,7 @@ namespace TabloidCLI.UserInterfaceManagers
                     return _parentUI;
                 default:
                     Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor= ConsoleColor.White;
                     return this;
                  
             }
