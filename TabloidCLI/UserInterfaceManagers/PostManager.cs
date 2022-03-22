@@ -50,6 +50,7 @@ namespace TabloidCLI.UserInterfaceManagers
                     Add();
                     return this;
                 case "3":
+                    Edit();
                     return this;
                 case "4":
                     return this;
@@ -88,7 +89,7 @@ namespace TabloidCLI.UserInterfaceManagers
 
             Console.Write("Author: ");
             Author authorToAdd = Choose("Which author would you like to add?");
-            post.Author = authorToAdd;
+                post.Author = authorToAdd;
 
             Console.Write("Blog Title: ");
             Blog blogToAdd = ChooseBlog("Which blog would you like to add? ");
@@ -127,6 +128,32 @@ namespace TabloidCLI.UserInterfaceManagers
                 return null;
             }
         }
+
+        private Author ChooseToEdit(string prompt = null)
+        {
+            Console.WriteLine(prompt);
+
+            List<Author> authors = _authorRepository.GetAll();
+
+            for (int i = 0; i < authors.Count; i++)
+            {
+                Author author = authors[i];
+                Console.WriteLine($" {i + 1}) {author.FullName}");
+            }
+            Console.Write("> ");
+
+            string input = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                int choice = int.Parse(input);
+                return authors[choice - 1];
+            }
+            else
+            {
+                return null;
+            }
+                  
+        }
         private Blog ChooseBlog(string prompt = null)
         {
             if (prompt == null)
@@ -157,6 +184,111 @@ namespace TabloidCLI.UserInterfaceManagers
                 return null;
             }
         }
+        private Blog ChooseBlogToEdit(string prompt = null)
+        {
+            Console.WriteLine(prompt);
+
+            List<Blog> blogs = _blogRepository.GetAll();
+
+            for (int i = 0; i < blogs.Count; i++)
+            {
+                Blog blog = blogs[i];
+                Console.WriteLine($" {i + 1}) {blog.Title}");
+            }
+            Console.Write("> ");
+
+            string input = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(input))
+            {
+                int choice = int.Parse(input);
+                return blogs[choice - 1];
+            }
+            else
+            {
+                return null;
+            }
+
+        }
+
+        private Post ChoosePost(string prompt = null)
+        {
+            if (prompt == null)
+            {
+                prompt = "Please choose a Post:";
+            }
+
+            Console.WriteLine(prompt);
+
+            List<Post> posts = _postRepository.GetAll();
+
+            for (int i = 0; i < posts.Count; i++)
+            {
+                Post post = posts[i];
+                Console.WriteLine($" {i + 1}) {post.Title}");
+            }
+            Console.Write("> ");
+
+            string input = Console.ReadLine();
+            try
+            {
+                int choice = int.Parse(input);
+                return posts[choice - 1];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Invalid Selection");
+                return null;
+            }
+        }
+
+        private void Edit()
+        {
+            Post postToEdit = ChoosePost("Which post would you like to edit?");
+            if (postToEdit == null)
+            {
+                return;
+            }
+
+            Console.WriteLine();
+            Console.Write("New Post Title (blank to leave unchanged): ");
+            string title = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                postToEdit.Title = title;
+            }
+            Console.Write("New url (blank to leave unchanged):  ");
+            string url = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(url))
+            {
+                postToEdit.Url = url;
+            }
+            Console.Write("New publication date (blank to leave unchanged:) ");
+            string publicationDate =(Console.ReadLine());
+            if (!string.IsNullOrWhiteSpace(publicationDate))
+            {
+                postToEdit.PublishDateTime = DateTime.Parse(publicationDate);
+            }
+
+
+            
+            Author authorToEdit = ChooseToEdit("Please select the author of this post? (blank to leave unchanged):");
+            if (authorToEdit != null)
+            {
+                postToEdit.Author = authorToEdit;
+            }
+
+           
+            Blog blogToEdit = ChooseBlogToEdit("Please Select the blog for this post? (blank to leave unchanged): ");
+            if (blogToEdit != null)
+            {
+                postToEdit.Blog = blogToEdit;
+            }
+
+
+
+            _postRepository.Update(postToEdit);
+        }
+
 
     }
 }
