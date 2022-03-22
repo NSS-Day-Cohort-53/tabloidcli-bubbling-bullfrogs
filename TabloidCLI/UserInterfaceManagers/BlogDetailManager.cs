@@ -16,6 +16,8 @@ namespace TabloidCLI.UserInterfaceManagers
         {
             _parentUI = parentUI;
             _blogRepository = new BlogRepository(connectionString);
+            _tagRepository = new TagRepository(connectionString);
+            _postRepository = new PostRepository(connectionString);
             _blogId = blogId;
         }
         public IUserInterfaceManager Execute()
@@ -51,6 +53,11 @@ namespace TabloidCLI.UserInterfaceManagers
             Blog blog = _blogRepository.Get(_blogId);
             Console.WriteLine($"Title: {blog.Title}");
             Console.WriteLine($"Url: {blog.Url}");
+            Console.WriteLine("Tags:");
+            foreach (Tag tag in blog.Tags)
+            {
+                Console.WriteLine(" " + tag);
+            }
             Console.WriteLine();
         }
         //private void ViewBlogPosts()
