@@ -14,7 +14,7 @@ namespace TabloidCLI.UserInterfaceManagers
         private PostRepository _postRepository;
         private string _connectionString;
 
-      
+
         private AuthorRepository _authorRepository;
         private BlogRepository _blogRepository;
 
@@ -53,6 +53,7 @@ namespace TabloidCLI.UserInterfaceManagers
                     Edit();
                     return this;
                 case "4":
+                    Remove();
                     return this;
                 case "5":
                     return this;
@@ -89,7 +90,7 @@ namespace TabloidCLI.UserInterfaceManagers
 
             Console.Write("Author: ");
             Author authorToAdd = Choose("Which author would you like to add?");
-                post.Author = authorToAdd;
+            post.Author = authorToAdd;
 
             Console.Write("Blog Title: ");
             Blog blogToAdd = ChooseBlog("Which blog would you like to add? ");
@@ -152,7 +153,7 @@ namespace TabloidCLI.UserInterfaceManagers
             {
                 return null;
             }
-                  
+
         }
         private Blog ChooseBlog(string prompt = null)
         {
@@ -263,21 +264,21 @@ namespace TabloidCLI.UserInterfaceManagers
                 postToEdit.Url = url;
             }
             Console.Write("New publication date (blank to leave unchanged:) ");
-            string publicationDate =(Console.ReadLine());
+            string publicationDate = (Console.ReadLine());
             if (!string.IsNullOrWhiteSpace(publicationDate))
             {
                 postToEdit.PublishDateTime = DateTime.Parse(publicationDate);
             }
 
 
-            
+
             Author authorToEdit = ChooseToEdit("Please select the author of this post? (blank to leave unchanged):");
             if (authorToEdit != null)
             {
                 postToEdit.Author = authorToEdit;
             }
 
-           
+
             Blog blogToEdit = ChooseBlogToEdit("Please Select the blog for this post? (blank to leave unchanged): ");
             if (blogToEdit != null)
             {
@@ -289,6 +290,14 @@ namespace TabloidCLI.UserInterfaceManagers
             _postRepository.Update(postToEdit);
         }
 
+        private void Remove()
+        {
+            Post postToDelete = ChoosePost("Which post would you like to remove?");
+            if (postToDelete != null)
+            {
+                _postRepository.Delete(postToDelete.Id);
+            }
+        }
 
     }
 }

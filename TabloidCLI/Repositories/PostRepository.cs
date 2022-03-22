@@ -27,7 +27,7 @@ namespace TabloidCLI.Repositories
                     List<Post> posts = new List<Post>();
 
                     SqlDataReader reader = cmd.ExecuteReader();
-                    while(reader.Read())
+                    while (reader.Read())
                     {
                         Post post = new Post()
                         {
@@ -37,7 +37,7 @@ namespace TabloidCLI.Repositories
                             PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
                             Author = new Author
                             {
-                               Id = reader.GetInt32(reader.GetOrdinal("AuthorId"))
+                                Id = reader.GetInt32(reader.GetOrdinal("AuthorId"))
                             },
                             Blog = new Blog
                             {
@@ -166,7 +166,19 @@ namespace TabloidCLI.Repositories
 
         public void Delete(int id)
         {
-            throw new NotImplementedException();
+            {
+                using (SqlConnection conn = Connection)
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = @"DELETE FROM Post WHERE id = @id";
+                        cmd.Parameters.AddWithValue("@id", id);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
         }
     }
 }
