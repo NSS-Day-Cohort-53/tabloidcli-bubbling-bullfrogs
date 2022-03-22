@@ -38,6 +38,7 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine(" 3) Edit Posts");
             Console.WriteLine(" 4) Remove Posts");
             Console.WriteLine(" 5) Note Management");
+            Console.WriteLine(" 6) Post Details");
             Console.WriteLine(" 0) Go Back");
 
             Console.Write("> ");
@@ -65,6 +66,16 @@ namespace TabloidCLI.UserInterfaceManagers
                     Console.Write("Press any key to continue");
                     Console.ReadKey();
                     return this;
+                case "6":
+                    Post post = ChoosePost();
+                    if (post == null)
+                    {
+                        return this;
+                    }
+                    else
+                    {
+                        return new PostDetailManager(this, _connectionString, post.Id);
+                    }
                 case "0":
                     return _parentUI;
                 default:
