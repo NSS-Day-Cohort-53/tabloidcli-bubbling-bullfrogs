@@ -271,14 +271,14 @@ namespace TabloidCLI.UserInterfaceManagers
 
 
             
-            Author authorToEdit = ChooseToEdit("Please select the author of this post? (cannot be blank):");
+            Author authorToEdit = ChooseToEdit("Please select the author of this post? (blank to leave unchanged):");
             if (authorToEdit != null)
             {
                 postToEdit.Author = authorToEdit;
             }
 
            
-            Blog blogToEdit = ChooseBlogToEdit("Please Select the blog for this post? (cannot be blank): ");
+            Blog blogToEdit = ChooseBlogToEdit("Please Select the blog for this post? (blank to leave unchanged): ");
             if (blogToEdit != null)
             {
                 postToEdit.Blog = blogToEdit;
