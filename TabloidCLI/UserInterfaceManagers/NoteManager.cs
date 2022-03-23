@@ -15,11 +15,13 @@ namespace TabloidCLI.UserInterfaceManagers
         private string _connectionString;
 
         private NoteRepository _noteRepository;
+        private PostRepository _postRepository;
 
         public NoteManager(IUserInterfaceManager parentUI, string connectionString)
         {
             _parentUI = parentUI;
             _noteRepository = new NoteRepository(connectionString);
+            _postRepository = new PostRepository(connectionString);
             _connectionString = connectionString;
         }
 
@@ -38,7 +40,7 @@ namespace TabloidCLI.UserInterfaceManagers
                     List();
                     return this;
                 case "2":
-                    List();
+                    Add();
                     return this;
                 case "3":
                     List();
@@ -54,6 +56,56 @@ namespace TabloidCLI.UserInterfaceManagers
             foreach (Note note in notes)
             {
                 Console.WriteLine(note.Content);
+            }
+        }
+        private void Add()
+        {
+            Console.WriteLine("New Note");
+            Note note = new Note();
+
+            Console.Write("Title: ");
+            note.Title = Console.ReadLine();
+
+            Console.Write("Content: ");
+            note.Content = Console.ReadLine();
+
+            Console.Write("Creation Date: ");
+            note.CreateDateTime = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("Post: ");
+            Post postToAdd = ChoosePost("Which post would you like to add this to?");
+            note.Post = postToAdd;
+
+            _noteRepository.Insert(note);
+        }
+        private Post ChoosePost(string prompt = null)
+        {
+            if (prompt == null)
+            {
+                prompt = "Please choose a Post:";
+            }
+
+            Console.WriteLine(prompt);
+
+            List<Post> posts = _postRepository.GetAll();
+
+            for (int i = 0; i < posts.Count; i++)
+            {
+                Post post = posts[i];
+                Console.WriteLine($" {i + 1}) {post.Title}");
+            }
+            Console.Write("> ");
+
+            string input = Console.ReadLine();
+            try
+            {
+                int choice = int.Parse(input);
+                return posts[choice - 1];
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Invalid Selection");
+                return null;
             }
         }
     }
