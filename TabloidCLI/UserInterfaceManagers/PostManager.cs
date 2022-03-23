@@ -68,16 +68,16 @@ namespace TabloidCLI.UserInterfaceManagers
                     Console.Write("Press any key to continue");
                     Console.ReadKey();
                     return this;
-                case "6":
-                    Post post = ChoosePost();
-                    if (post == null)
-                    {
-                        return this;
-                    }
-                    else
-                    {
-                        return new PostDetailManager(this, _connectionString, post.Id);
-                    }
+                //case "6":
+                //    Post post = ChoosePost();
+                //    if (post == null)
+                //    {
+                //        return this;
+                //    }
+                //    else
+                //    {
+                //        return new PostDetailManager(this, _connectionString, post.Id);
+                //    }
                 case "0":
                     return _parentUI;
                 default:
