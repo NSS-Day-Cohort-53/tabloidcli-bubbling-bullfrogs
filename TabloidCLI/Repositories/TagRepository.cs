@@ -193,13 +193,10 @@ namespace TabloidCLI
                             Author = new Author
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
-                                //FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
-                                //LastName = reader.GetString(reader.GetOrdinal("LastName"))
                             },
                             Blog = new Blog
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("BlogId")),
-                                //Title = reader.GetString(reader.GetOrdinal("BlogTitle"))
                             }
                         };
                         results.Add(post);
