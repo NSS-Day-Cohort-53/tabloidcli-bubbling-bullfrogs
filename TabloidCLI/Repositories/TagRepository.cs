@@ -162,5 +162,54 @@ namespace TabloidCLI
                 }
             }
         }
+        public SearchResults<Post> SearchPosts(string tagName)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT a.Id,
+                                               a.Title,
+                                               a.Url,
+                                               a.BlogId as BlogId,
+                                               a.AuthorId as AuthorId
+                                          FROM Post a
+                                               LEFT JOIN PostTag at on a.Id = at.PostId
+                                               LEFT JOIN Tag t on t.Id = at.TagId
+                                         WHERE t.Name LIKE @name";
+                    cmd.Parameters.AddWithValue("@name", $"%{tagName}%");
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    SearchResults<Post> results = new SearchResults<Post>();
+                    while (reader.Read())
+                    {
+                       
+                        Post post = new Post()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Title = reader.GetString(reader.GetOrdinal("Title")),
+                            Url = reader.GetString(reader.GetOrdinal("Url")),
+                            Author = new Author
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("AuthorId")),
+                                //FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                                //LastName = reader.GetString(reader.GetOrdinal("LastName"))
+                            },
+                            Blog = new Blog
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("BlogId")),
+                                //Title = reader.GetString(reader.GetOrdinal("BlogTitle"))
+                            }
+                        };
+                        results.Add(post);
+                    }
+
+                    reader.Close();
+
+                    return results;
+                }
+            }
+        }
     }
 }
