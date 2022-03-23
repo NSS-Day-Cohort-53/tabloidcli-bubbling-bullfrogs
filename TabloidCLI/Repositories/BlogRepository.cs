@@ -38,7 +38,6 @@ namespace TabloidCLI
                     return blogs;
                 }
             }
-
         }
         public Blog Get(int id)
         {
@@ -84,7 +83,37 @@ namespace TabloidCLI
 
                 }
             }
+        }
+        public List<Post> GetByBlog(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT p.Id, p.Title, p.Url, p.PublishDateTime, b.Id FROM Post p JOIN Blog b ON p.BlogId = b.Id";
 
+                    cmd.Parameters.AddWithValue("@id", id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<Post> posts = new List<Post>();
+
+                    while (reader.Read())
+                    {
+                        Post post = new Post()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Title = reader.GetString(reader.GetOrdinal("Title")),
+                            Url = reader.GetString(reader.GetOrdinal("Url")),
+                            PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
+                        };
+                        posts.Add(post);
+                    }
+                    reader.Close();
+
+                    return posts;
+                }
+            }
         }
         public void Delete(int id)
         {
