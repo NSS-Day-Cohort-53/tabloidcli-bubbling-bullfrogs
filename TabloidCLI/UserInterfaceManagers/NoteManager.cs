@@ -32,6 +32,7 @@ namespace TabloidCLI.UserInterfaceManagers
             Console.WriteLine(" 2) Add Note");
             Console.WriteLine(" 3) Edit Note");
             Console.WriteLine(" 4) Remove Note");
+            Console.WriteLine(" 0) Go Back");
 
             Console.Write("> ");
             string choice = Console.ReadLine();
@@ -48,6 +49,8 @@ namespace TabloidCLI.UserInterfaceManagers
                 case "4":
                     Remove();
                     return this;
+                case "0":
+                    return _parentUI;
                 default:
                     Console.WriteLine("Invalid Selection");
                     return this;
