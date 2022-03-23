@@ -30,6 +30,10 @@ namespace TabloidCLI.Repositories
                             Title = reader.GetString(reader.GetOrdinal("Title")),
                             Content = reader.GetString(reader.GetOrdinal("Content")),
                             CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                            Post = new Post
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("PostId")),
+                            }
                         };
 
                         notes.Add(note);
@@ -52,13 +56,15 @@ namespace TabloidCLI.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"INSERT INTO Note (Title, Content, CreateDateTime) 
-                                        VALUES (@title, @content, @createDateTime)";
+                    cmd.CommandText = @"INSERT INTO Note (Title, Content, CreateDateTime, PostId) 
+                                        VALUES (@title, @content, @createDateTime, @postId)";
 
 
                     cmd.Parameters.AddWithValue("@title", note.Title);
                     cmd.Parameters.AddWithValue("@content", note.Content);
                     cmd.Parameters.AddWithValue("@createDateTime", note.CreateDateTime);
+                    cmd.Parameters.AddWithValue("@postId", note.Post.Id);
+
 
                     cmd.ExecuteNonQuery();
                 }
