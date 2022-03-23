@@ -10,14 +10,16 @@ namespace TabloidCLI.UserInterfaceManagers
 {
     class PostManager : IUserInterfaceManager
     {
+        private const string CONNECTION_STRING =
+        @"Data Source=localhost\SQLEXPRESS;Database=TabloidCLI;Integrated Security=True";
+
         private readonly IUserInterfaceManager _parentUI;
         private PostRepository _postRepository;
         private string _connectionString;
+        private NoteRepository _noteRepository;
 
-      
         private AuthorRepository _authorRepository;
         private BlogRepository _blogRepository;
-        private NoteRepository _noteRepository;
 
 
         public PostManager(IUserInterfaceManager parentUI, string connectionString)
@@ -28,10 +30,14 @@ namespace TabloidCLI.UserInterfaceManagers
             _blogRepository = new BlogRepository(connectionString);
             _noteRepository = new NoteRepository(connectionString);
             _connectionString = connectionString;
+
         }
 
         public IUserInterfaceManager Execute()
         {
+
+
+
             Console.WriteLine("Post Menu");
             Console.WriteLine(" 1) List Posts");
             Console.WriteLine(" 2) Add Posts");
@@ -59,15 +65,7 @@ namespace TabloidCLI.UserInterfaceManagers
                     Remove();
                     return this;
                 case "5":
-                    Console.WriteLine("Here is a list of your Notes");
-                    List<Note> notes = _noteRepository.GetAll();
-                    foreach (Note n in notes)
-                    {
-                        Console.WriteLine($"{n.Id} - Note: {n.Content}");
-                    }
-                    Console.Write("Press any key to continue");
-                    Console.ReadKey();
-                    return this;
+                    return new NoteManager(this, CONNECTION_STRING);
                 case "6":
                    Post post = ChoosePost();
                    if (post == null)
