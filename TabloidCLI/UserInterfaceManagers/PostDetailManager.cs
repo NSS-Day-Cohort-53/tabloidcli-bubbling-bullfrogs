@@ -55,7 +55,6 @@ namespace TabloidCLI.UserInterfaceManagers
                     return this;
                 case "4":
                     return new NoteManager(this, CONNECTION_STRING);
-                    return this;
                 case "0":
                     return _parentUI;
                 default:
